@@ -1,0 +1,22 @@
+version: '3'
+ 
+services:
+    server:
+        build:
+            context: ./src
+            args:
+                SSH_MASTER_USER: ${SSH_MASTER_USER}
+                SSH_MASTER_PASS: ${SSH_MASTER_PASS}
+        hostname: cuda-server
+        user: ${UID_GID}
+        ports:
+            - "16088:22"
+            - "6006:6006"
+        volumes:
+            - ~/projects:/home/${SSH_MASTER_USER}/projects
+            - /home/data:/home/${SSH_MASTER_USER}/data
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                      - capabilities: [gpu]
