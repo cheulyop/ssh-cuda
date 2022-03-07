@@ -1,19 +1,25 @@
-version: '3'
+version: '2.4'
  
 services:
     server:
+        image: ssh-cuda_server:11.3.0-cudnn8-devel-ubuntu18.04-py37
+        group_add:
+          - dataman
         build:
             context: ./src
             args:
                 SSH_MASTER_USER: ${SSH_MASTER_USER}
                 SSH_MASTER_PASS: ${SSH_MASTER_PASS}
-        hostname: cuda-server
+            shm_size: '2gb'
+        hostname: docker-gpu-server
+        container_name: ${USER}-gpu-server
         user: ${UID_GID}
+        ipc: host
         ports:
             - "16088:22"
             - "6006:6006"
         volumes:
-            - ~/projects:/home/${SSH_MASTER_USER}/projects
+            - /home/${USER}/projects:/home/${SSH_MASTER_USER}/projects
             - /home/data:/home/${SSH_MASTER_USER}/data
         deploy:
             resources:

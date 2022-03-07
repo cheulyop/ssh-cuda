@@ -1,7 +1,8 @@
-FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:11.3.0-cudnn8-devel-ubuntu18.04
 
 ARG SSH_MASTER_USER
 ARG SSH_MASTER_PASS
+ENV TZ=Asia/Seoul
 
 ENV LANG C.UTF-8
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
@@ -34,6 +35,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         sudo \
         lsb-release \
         openssh-server \
+        tzdata \
         && \
 
     $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
@@ -55,6 +57,8 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
         python3.7 \
         python3.7-dev \
+        # python3.6 \
+        # python3.6-dev \
         python3-distutils-extra \
         && \
 
@@ -62,9 +66,12 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         https://bootstrap.pypa.io/get-pip.py && \
 
     python3.7 ~/get-pip.py && \
+    # python3.6 ~/get-pip.py && \
 
     ln -s /usr/bin/python3.7 /usr/local/bin/python3 && \
     ln -s /usr/bin/python3.7 /usr/local/bin/python && \
+    # ln -s /usr/bin/python3.6 /usr/local/bin/python3 && \
+    # ln -s /usr/bin/python3.6 /usr/local/bin/python && \
 
     $PIP_INSTALL \
         setuptools \
